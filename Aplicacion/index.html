@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenida</title>
+    <style>
+        /* Estilos generales del cuerpo de la página */
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #ffffff; /* Fondo blanco */
+            display: flex;
+            justify-content: center; /* Centra horizontalmente */
+            align-items: center;   /* Centra verticalmente */
+            height: 100vh; /* Ocupa toda la altura de la pantalla */
+        }
+
+        /* Contenedor principal para centrar el contenido */
+        .container {
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Estilo para el logo */
+        .logo {
+            width: 150px; /* Ancho del logo */
+            margin-bottom: 40px; /* Espacio debajo del logo */
+        }
+
+        /* Estilo del botón de inicio */
+        .start-button {
+            background-color: #d6001c; /* Color rojo corporativo del Metro */
+            color: white; /* Texto blanco */
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 50px; /* Bordes completamente redondeados */
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Sombra suave */
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        /* Efecto al pasar el mouse sobre el botón */
+        .start-button:hover {
+            transform: translateY(-2px); /* Eleva ligeramente el botón */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="Fotos/Santiago_Metro_logo.svg.png" alt="Logo del Metro" class="logo">
+        <h1>Bienvenido al Sistema de Gestión del Metro</h1>
+        <p>Por favor, inicie sesión para continuar.</p>
+        <button class="start-button" onclick="window.location.href='login.html'">Iniciar Sesión</button>
+    </div>
+
+</body>
+</html>

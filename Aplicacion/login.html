@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body { margin: 0; font-family: system-ui, sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .login-container { background-color: #ffffff; padding: 40px 30px; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); text-align: center; width: 100%; max-width: 350px; }
+        .logo { width: 120px; margin-bottom: 30px; }
+        .input-group { margin-bottom: 20px; }
+        .input-field { width: 100%; padding: 12px 15px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
+        .button-group { display: flex; flex-direction: column; gap: 10px; }
+        .primary-button { background-color: #d6001c; color: white; border: none; padding: 15px; font-size: 18px; font-weight: bold; border-radius: 8px; cursor: pointer; transition: background-color 0.2s ease; }
+        .primary-button:hover { background-color: #b00016; }
+        .secondary-button { background-color: transparent; color: #d6001c; border: 2px solid #d6001c; padding: 13px; font-size: 18px; font-weight: bold; border-radius: 8px; cursor: pointer; transition: all 0.2s ease; }
+        .secondary-button:hover { background-color: #d6001c; color: white; }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+
+        <div class="input-group">
+            <input type="text" class="input-field" placeholder="Nombre de usuario" required>
+        </div>
+        <div class="input-group">
+            <input type="password" class="input-field" placeholder="Contraseña" required>
+        </div>
+        <div class="button-group">
+            <button class="primary-button" onclick="window.location.href='home.html'">Iniciar Sesión</button>
+            <button class="secondary-button" onclick="window.location.href='registrar.html'">Registrar</button>
+        </div>
+    </div>
+</body>
+</html>
