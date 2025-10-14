@@ -38,7 +38,7 @@
             box-sizing: border-box;
             font-size: 16px;
         }
-        .primary-button {
+        .primer-button {
             width: 100%;
             background-color: #d6001c;
             color: white;
@@ -50,8 +50,24 @@
             cursor: pointer;
             transition: background-color 0.2s ease;
         }
-        .primary-button:hover {
+        .primer-button:hover {
             background-color: #b00016;
+        }
+        .segondo-button {
+            width: 100%;
+            background-color: transparent; 
+            color: #d6001c;
+            border: 2px solid #d6001c; 
+            padding: 13px; 
+            font-size: 18px; 
+            font-weight: bold; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            transition: all 0.2s ease; 
+        }
+        .segondo-button:hover {
+            background-color: #d6001c; 
+            color: white; 
         }
         .login-link {
             margin-top: 20px;
@@ -75,11 +91,10 @@
             <div class="input-group">
                 <input type="password" class="input-field" placeholder="Contraseña" required>
             </div>
-            <div class="input-group">
-                <input type="password" class="input-field" placeholder="Confirmar contraseña" required>
-            </div>
 
-            <button type="button" class="primary-button" onclick="window.location.href='index.html'">Crear Cuenta</button>
+            <button type="button" class="primer-button" onclick="window.location.href='index.html'">Iniciar seccion</button>
+
+            <button type="button" class="segondo-button" onclick="window.location.href='index.html'">Crear Cuenta</button>
         </form>
 
         <p class="login-link">¿Ya tienes una cuenta? <a href="index.html">Inicia Sesión</a></p>
