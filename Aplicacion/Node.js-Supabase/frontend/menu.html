@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Metro Cultural - Plataforma de eventos culturales</title>
+  <link rel="stylesheet" href="menu.css">
+  
+
+  <style>
+    /* Reset */
+    * { margin:0; padding:0; box-sizing:border-box; font-family: Arial, sans-serif; }
+    body { background-color: #f4f4f4; }
+
+    /*Navbar*/
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(135deg, rgba(15, 15, 15, 0.945), #a31111b2);
+      padding: 0.5rem 1rem;
+      position: relative;
+      z-index: 100;
+    }
+
+    .navbar .logo { font-size: 1.5rem; color: #fdfdfd; text-decoration: none; }
+    
+    
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .nav-links a {
+      color: #ffffff;
+      text-decoration: none;
+      transition: color 0.3s;
+      
+    }
+
+    .nav-links a:hover { color: rgb(255, 255, 255);text-shadow: 0 0 5px #cecdcde0, 0 0 10px #c5c5c5dc; }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+      gap: 5px;
+      
+    }
+
+    .hamburger div {
+      width: 25px;
+      height: 3px;
+      background-color: #e6dede;
+      transition: all 0.3s ease;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .nav-links {
+        position: absolute;
+        top: 60px;
+        right: 0;
+        background: linear-gradient(135deg, rgba(15, 15, 15, 0.925), #a31111a2);
+        flex-direction: column;
+        width: 200px;
+        transform: translateX(100%);
+        transition: transform 0.3s ease-in-out;
+        border-radius: 5px 0 0 5px;
+        overflow: hidden;
+        max-height: calc(100vh - 60px);
+        display: flex;
+      }
+
+      .nav-links.show { transform: translateX(0); }
+
+      .nav-links a { padding: 1rem; border-bottom: 1px solid #ffffffc2; }
+
+      .hamburger { display: flex; }
+
+      /* Cerrar sesión abajo */
+      .logout { margin-top: auto; background: linear-gradient(135deg, rgba(24, 23, 23, 0.76), #a31111a2); text-align: center; }
+      .logout a { display: block; padding: 1rem; color: #ffffffe3; text-decoration: none; transition: background 0.3s; }
+    }
+  </style>
+</head>
+<script src="mensaje.js"></script>
+
+
+<body>
+  <!-- ===== Header con menú hamburguesa ===== -->
+  <header>
+    <nav class="navbar">
+      <a href="menu.html" class="logo">Metro <span>Cultural</span></a>
+      <div class="hamburger" id="hamburger">
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+      <div class="nav-links" id="navLinks">
+        <a href="menu.html">Inicio</a>
+        <a href="Login.html">Iniciar sesion</a>
+        <a href="lineas.html">Estaciones</a>
+        <a href="eventos.html">Eventos</a>
+        <a href="favoritos.html">Favoritos</a>
+      
+        <div class="logout">
+          <button id="btn-logout" class="logout-btn">Cerrar sesión</button>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h1>Empieza una nueva aventura</h1>
+    <p>Explora los mejores eventos culturales en tu ciudad. Conciertos, exposiciones, talleres y más en un solo lugar.</p>
+    <a href="#" class="btn" onclick="mostrarMensaje()">Comenzar</a>
+  </section>
+
+  <section class="destacados">
+    <h2 class="section-title">Eventos Destacados</h2>
+    <div class="eventos-grid">
+      <article class="evento-card">
+        <img src="img/event1 1.jpg" alt="Festival de Música Urbana" class="evento-img">
+        <div class="evento-info">
+          <span class="evento-categoria">Música</span>
+          <h3 class="evento-titulo">CONCIERTO ACUSTICO LOS JAIVAS 2025</h3>
+          <div class="evento-fecha">
+            <i class="fas fa-calendar-alt"></i>
+            <span>29-11-2025</span>
+          </div>
+          <p class="evento-desc">El Concierto Acústico de Los Jaivas es una experiencia única que revive un repertorio de temas creados en formato acústico...</p>
+          <a href="eventos.html" class="btn">Ir a eventos</a>
+        </div>
+      </article>
+
+      <article class="evento-card">
+        <img src="img/event2.jpg" alt="evento moda" class="evento-img">
+        <div class="evento-info">
+          <span class="evento-categoria">Arte</span>
+          <h3 class="evento-titulo">CHILE FASHION WEEK 2025</h3>
+          <div class="evento-fecha">
+            <i class="fas fa-calendar-alt"></i>
+            <span>29/11/2025 - 30/11/2025</span>
+          </div>
+          <p class="evento-desc">Evento de moda nacional e internacional que ha revolucionado la industria de la moda en Chile...</p>
+          <a href="eventos.html" class="btn">Ir a eventos</a>
+  
+        </div>
+      </article>
+    </div>
+  </section>
+
+
+  <footer>
+    <div class="footer-links">
+      <a href="#">Política de privacidad</a>
+      <a href="#">Términos de uso</a>
+      <a href="#">Contacto</a>
+    </div>
+    <p class="copyright">© 2025 Metro Cultural. Todos los derechos reservados.</p>
+  </footer>
+
+  <script>
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('navLinks');
+
+    hamburger.addEventListener('click', () => {
+      navLinks.classList.toggle('show');
+    });
+  </script>
+
+  <script src="https://unpkg.com/@supabase/supabase-js"></script>
+  <script src="logout.js"></script>
+
+</body>
+</html>
+

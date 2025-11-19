@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eventos Culturales Metro</title>
+  <link rel="stylesheet" href="eventos.css">
+  <link rel="stylesheet" href="hamburguesa.css">
+  
+</head>
+<body>
+  <header id="menu-container"></header>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <section class="titulo">
+    <h2 class="section-title">Eventos Culturales Metro</h2>
+
+    <div class="filtros">
+      <select id="filtroTipo">
+        <option value="">Todos los Tipos</option>
+      </select>
+
+      <select id="filtroLinea">
+        <option value="">Todas las Líneas</option>
+      </select>
+    </div>
+  </section>
+
+  <section class="carousel-container">
+    <button class="carousel-btn prev-btn">&#10094;</button>
+
+    <div id="listaEventos" class="carousel">
+      
+    </div>
+
+    <button class="carousel-btn next-btn">&#10095;</button>
+  </section>
+
+  <script>
+  const client = supabase.createClient(
+    "https://jgiwhiccqbzeffyndsbf.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpnaXdoaWNjcWJ6ZWZmeW5kc2JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAyNzM1MDIsImV4cCI6MjA3NTg0OTUwMn0.Q7qh7dODhSTFTKvOmwrkA9mYkbxAhDK28AyaVdJjCk4"
+  );
+  </script>
+
+  <script>
+fetch("hamburguesa.html")
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById("menu-container").innerHTML = data;
+
+    // Esperar un instante para que DOM esté listo
+    setTimeout(() => {
+      activarHamburguesa();
+      controlarBotonesSesion();
+      asignarLogout();
+    }, 50);
+  });
+
+function activarHamburguesa() {
+  const hamburger = document.getElementById("hamburger");
+  const navLinks = document.getElementById("navLinks");
+  if (!hamburger || !navLinks) return;
+  hamburger.addEventListener("click", () => navLinks.classList.toggle("show"));
+}
+
+async function controlarBotonesSesion() {
+  const { data: { session } } = await client.auth.getSession();
+
+  const loginBtn = document.querySelector('.nav-links a[href="Login.html"]');
+  const logoutBtn = document.getElementById("btn-logout");
+
+  if (!loginBtn || !logoutBtn) return;
+
+  if (session) {
+    loginBtn.style.display = "none";
+    logoutBtn.style.display = "block";
+  } else {
+    loginBtn.style.display = "block";
+    logoutBtn.style.display = "none";
+  }
+}
+
+function asignarLogout() {
+  const logoutBtn = document.getElementById("btn-logout");
+  if (!logoutBtn) return;
+
+  logoutBtn.addEventListener("click", async () => {
+    await client.auth.signOut();
+
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    localStorage.removeItem("user");
+
+    window.location.href = "Login.html";
+  });
+}
+</script>
+
+  <!-- JS: cargar eventos, filtros y favoritos -->
+
+  <script src="favoritos-evento.js"></script>
+  <script src="eventos.js"></script>
+</body>
+</html>
+
+

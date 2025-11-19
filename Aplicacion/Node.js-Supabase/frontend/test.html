@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eventos Culturales Metro</title>
+  <link rel="stylesheet" href="test.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <header id="menu-container"></header>
+
+  <section class="titulo">
+    <h2 class="section-title">Eventos Culturales Metro</h2>
+
+    <div class="filtros">
+      <select id="filtroTipo">
+        <option value="">Todos los Tipos</option>
+      </select>
+
+      <select id="filtroLinea">
+        <option value="">Todas las Líneas</option>
+      </select>
+    </div>
+  </section>
+
+  <section class="carousel-container">
+    <button class="carousel-btn prev-btn">&#10094;</button>
+
+    <div id="listaEventos" class="carousel">
+      <!-- Las cards se insertan dinámicamente desde JS -->
+      <!-- Ejemplo de card con botón favorito: -->
+      <!--
+      <div class="card">
+        <img src="URL_DE_LA_IMAGEN" alt="Nombre del Evento">
+        <div class="card-content">
+          <h3>Nombre del Evento</h3>
+          <small>Tipo • Estación • Línea</small>
+          <p>Descripción del evento</p>
+          <p><strong>Horario</strong></p>
+          <button class="btn-fav" data-evento-id="ID_DEL_EVENTO">❤️ Favorito</button>
+        </div>
+      </div>
+      -->
+    </div>
+
+    <button class="carousel-btn next-btn">&#10095;</button>
+  </section>
+
+  <!-- JS: cargar eventos, filtros y favoritos -->
+  <script src="favoritos-evento.js"></script>
+  <script src="test.js"></script>
+</body>
+</html>
+
+
+
+
