@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel Admin - Metro Cultural</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<div class="sidebar">
+  <h2>Metro Cultural</h2>
+  <ul>
+    <li class="active" data-section="eventosSection">Eventos</li>
+    <li data-section="usuariosSection">Usuarios</li>
+    <li data-section="lineasSection">Líneas</li>
+    <li data-section="estacionesSection">Estaciones</li>
+    <li data-section="lugaresSection">Lugares Culturales</li>
+    <li data-section="eventoFavoritoSection">Reportes</li>
+    <button id="adminLogoutBtn" class="logout-btn">Cerrar Sesión</button>
+  </ul>
+</div>
+
+<div class="content">
+
+  <!-- Eventos -->
+  <section id="eventosSection" class="admin-section visible">
+    <h2>Gestión de Eventos</h2>
+    <div id="eventosContainer"></div>
+  </section>
+
+  <!-- Usuarios -->
+  <section id="usuariosSection" class="admin-section">
+    <h2>Gestión de Usuarios</h2>
+    <div id="usuariosContainer"></div>
+  </section>
+
+  <!-- Líneas -->
+  <section id="lineasSection" class="admin-section">
+    <h2>Líneas del Metro</h2>
+    <div id="lineasContainer"></div>
+  </section>
+
+  <!-- Estaciones -->
+  <section id="estacionesSection" class="admin-section">
+    <h2>Estaciones</h2>
+    <div id="estacionesContainer"></div>
+  </section>
+
+  <!-- Lugares -->
+  <section id="lugaresSection" class="admin-section">
+    <h2>Lugares Culturales</h2>
+    <div id="lugaresContainer"></div>
+  </section>
+
+  <!-- Evento más favorito -->
+<section id="eventoFavoritoSection" class="admin-section">
+  <h2>Evento más popular</h2>
+  <div id="eventoFavoritoContainer">
+  </div>
+</section>
+
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+<script type="module" src="admin.js"></script>
+
+</body>
+</html>

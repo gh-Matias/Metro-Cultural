@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Metro Cultural - Plataforma de eventos culturales</title>
+  <link rel="stylesheet" href="estaciones.css">
+  <link rel="stylesheet" href="hamburguesa.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fafafa;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin-top: 30px;
+    }
+
+    .card-estacion {
+      background-color: #fff;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      text-align: center;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .card-estacion:hover {
+      background-color: #f1f1f1;
+      transform: scale(1.03);
+    }
+  </style>
+</head>
+<body>
+  <header id="menu-container"></header>
+
+   <section class="titulo">
+    <h2 class="section-title">Estaciones de la linea</h2>
+   </section>
+  <div id="lista-estaciones" class="grid"></div>
+
+   <div class="botones-nav">
+    <a id="volverBtn" href="lineas.html" class="volver">⬅ Volver</a></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+
+    const client = supabase.createClient(
+      "https://jgiwhiccqbzeffyndsbf.supabase.co",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpnaXdoaWNjcWJ6ZWZmeW5kc2JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAyNzM1MDIsImV4cCI6MjA3NTg0OTUwMn0.Q7qh7dODhSTFTKvOmwrkA9mYkbxAhDK28AyaVdJjCk4"
+    );
+
+    async function cargarEstaciones() {
+      // Obtener la línea seleccionada
+      const lineaId = localStorage.getItem("lineaSeleccionada");
+
+      if (!lineaId) {
+        alert("No se ha seleccionado ninguna línea.");
+        window.location.href = "lineas.html";
+        return;
+      }
+
+      //  Obtener estaciones vinculadas
+      const { data, error } = await client
+        .from("estaciones")
+        .select("*")
+        .eq("linea_id", lineaId);
+
+      if (error) return console.error("Error al cargar estaciones:", error);
+
+      const contenedor = document.getElementById("lista-estaciones");
+      contenedor.innerHTML = "";
+
+      data.forEach(estacion => {
+        const card = document.createElement("div");
+        card.classList.add("card-estacion");
+        card.textContent = estacion.nombre_estacion;
+
+        //  Redirigir a detalle de la estación
+        card.addEventListener("click", () => {
+          localStorage.setItem("estacionSeleccionada", estacion.id);
+          window.location.href = "lugar.html"; //
+        });
+
+        contenedor.appendChild(card);
+      });
+    }
+
+    cargarEstaciones();
+
+    // APLICAR COLOR DINÁMICO A LAS ESTACIONES
+  const colorLinea = localStorage.getItem("colorLineaSeleccionada");
+
+  if (colorLinea) {
+    const style = document.createElement("style");
+    style.innerHTML = `
+      .card-estacion {
+        border: 3px solid ${colorLinea} !important;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+  </script>
+
+  <script>
+fetch("hamburguesa.html")
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById("menu-container").innerHTML = data;
+
+    // Esperar un instante para que DOM esté listo
+    setTimeout(() => {
+      activarHamburguesa();
+      controlarBotonesSesion();
+      asignarLogout();
+    }, 50);
+  });
+
+function activarHamburguesa() {
+  const hamburger = document.getElementById("hamburger");
+  const navLinks = document.getElementById("navLinks");
+  if (!hamburger || !navLinks) return;
+  hamburger.addEventListener("click", () => navLinks.classList.toggle("show"));
+}
+
+async function controlarBotonesSesion() {
+  const { data: { session } } = await client.auth.getSession();
+
+  const loginBtn = document.querySelector('.nav-links a[href="Login.html"]');
+  const logoutBtn = document.getElementById("btn-logout");
+
+  if (!loginBtn || !logoutBtn) return;
+
+  if (session) {
+    loginBtn.style.display = "none";
+    logoutBtn.style.display = "block";
+  } else {
+    loginBtn.style.display = "block";
+    logoutBtn.style.display = "none";
+  }
+}
+
+function asignarLogout() {
+  const logoutBtn = document.getElementById("btn-logout");
+  if (!logoutBtn) return;
+
+  logoutBtn.addEventListener("click", async () => {
+    await client.auth.signOut();
+
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    localStorage.removeItem("user");
+
+    window.location.href = "Login.html";
+  });
+}
+</script>
+
+<script>
+window.addEventListener("load", () => {
+  const btn = document.getElementById("volverBtn");
+  if (btn) {
+    setTimeout(() => {
+      btn.style.opacity = "1";
+      btn.style.visibility = "visible";
+    }, 150); // <-- Ajusta aquí (150–250 ideal)
+  }
+});
+</script>
+
+
+
+</body>
+</html>

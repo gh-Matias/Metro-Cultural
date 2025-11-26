@@ -1,0 +1,76 @@
+body {
+  font-family: "Poppins", Arial, sans-serif;
+  background: url("img/perfil2.jpg") no-repeat center center fixed;
+  background-size: cover;
+  color: #222;
+  margin: 0;
+  padding: 0;
+}
+
+/* Contenedor principal */
+.perfil-container {
+  max-width: 450px;
+  margin: 100px auto;
+  padding: 20px;
+  background: rgba(255,255,255,0.95);
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  backdrop-filter: blur(4px);
+}
+
+/* Título */
+.perfil-container h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 26px;
+  color: #b10000;
+}
+
+/* Labels */
+.perfil-container label {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+/* Inputs */
+.perfil-container input {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0 18px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  background: #fafafa;
+  transition: 0.2s ease;
+}
+
+.perfil-container input:focus {
+  border-color: #b10000;
+  box-shadow: 0 0 4px rgba(177,0,0,0.6);
+  outline: none;
+}
+
+/* Botón */
+#saveBtn {
+  width: 100%;
+  padding: 14px;
+  background: #b10000;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: 0.2s ease;
+}
+
+#saveBtn:hover {
+  background: #8a0000;
+}
+
+/* Mensaje */
+#statusMsg {
+  text-align: center;
+  margin-top: 15px;
+  font-weight: bold;
+  color: #333;
+}
+
