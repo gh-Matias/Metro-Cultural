@@ -15,7 +15,7 @@
     <li data-section="lineasSection">Líneas</li>
     <li data-section="estacionesSection">Estaciones</li>
     <li data-section="lugaresSection">Lugares Culturales</li>
-    <li data-section="eventoFavoritoSection">Reportes</li>
+    <li data-section="favoritos">Dashboard</li>
     <button id="adminLogoutBtn" class="logout-btn">Cerrar Sesión</button>
   </ul>
 </div>
@@ -52,12 +52,19 @@
     <div id="lugaresContainer"></div>
   </section>
 
-  <!-- Evento más favorito -->
-<section id="eventoFavoritoSection" class="admin-section">
-  <h2>Evento más popular</h2>
-  <div id="eventoFavoritoContainer">
-  </div>
+<section id="favoritos" class="admin-section">
+    <h2>Dashboard</h2>
+    <div id="dashboardContainer" class="dashboard-cards"></div>
+
+    
+
+    
+</div>
+
 </section>
+
+
+
 
 
 </div>
@@ -65,6 +72,8 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase.js"></script>
 <script type="module" src="admin.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 
 </body>
 </html>

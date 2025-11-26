@@ -2,7 +2,6 @@
 // MOSTRAR USER ID DEL ADMIN ACTUAL
 // ===============================
 
-// Intentamos obtener los datos del usuario guardados en login
 const storedUser = localStorage.getItem("user");
 
 if (!storedUser) {
@@ -11,7 +10,7 @@ if (!storedUser) {
     const user = JSON.parse(storedUser);
     console.log("UUID DEL ADMIN ACTUAL:", user.id || user.user_id);
 
-    // Opcional: mostrarlo en pantalla
+    // mostrarlo en pantalla
     const cont = document.body;
     const displayId = document.createElement("div");
     displayId.style.cssText = `
@@ -80,6 +79,90 @@ menuItems.forEach(item => {
         }
     });
 });
+
+// ===============================
+// DASHBOARD
+// ===============================
+
+document.addEventListener("DOMContentLoaded", cargarDashboard);
+
+async function cargarDashboard() {
+    const cont = document.getElementById("dashboardContainer");
+    if (!cont) return;
+
+    // Consultas a Supabase
+    const [{ data: usuarios }, { data: eventos }, { data: lugares }, { data: admins }] = await Promise.all([
+        supabase.from("cliente_perfil").select("*"),
+        supabase.from("evento").select("*"),
+        supabase.from("lugar_cultural").select("*"),
+        supabase.from("admin").select("*").eq("activo", true)
+    ]);
+
+    // ==== TARJETAS SUPERIORES (Stats) ====
+    cont.innerHTML = `
+        <div class="dashboard-grid">
+            <div class="card stat-card">
+                <h3>Total Usuarios</h3>
+                <p class="stat-number">${usuarios?.length || 0}</p>
+            </div>
+
+            <div class="card stat-card">
+                <h3>Administradores activos</h3>
+                <p class="stat-number">${admins?.length || 0}</p>
+            </div>
+
+            <div class="card stat-card">
+                <h3>Total Eventos</h3>
+                <p class="stat-number">${eventos?.length || 0}</p>
+            </div>
+
+            <div class="card stat-card">
+                <h3>Lugares Culturales</h3>
+                <p class="stat-number">${lugares?.length || 0}</p>
+            </div>
+        </div>
+
+        <!-- LISTADOS RECIENTES -->
+        <div class="dashboard-lists">
+            <div class="card list-card">
+                <h3>Últimos eventos agregados</h3>
+                <ul>
+                    ${
+                       eventos?.slice(-5).reverse().map(ev => {
+                        const usuario = admins.find(u => {
+                            return u.user_id === ev.creado_por;
+                        });
+
+                        const nombreUsuario = usuario ? usuario.nombre_admin : "Desconocido";
+                            return `<li>${ev.nombre_evento} <span class="added-by">    - ( Por: ${nombreUsuario})</span></li>`;
+                        }).join("")
+
+                    }
+                </ul>
+            </div>
+
+            <div class="card list-card">
+                <h3>Últimos lugares agregados</h3>
+                <ul>
+
+                  ${
+                    lugares?.slice(-5).reverse().map(l => {
+                        const usuario = admins.find(u => u.user_id === l.creado_por);
+                        const nombreUsuario = usuario ? usuario.nombre_admin : "Desconocido";
+                            return `<li>${l.nombre_lugar} <span class="added-by"> - (Por: ${nombreUsuario})</span></li>`;
+                        }).join("")
+                    }
+                    
+                </ul>
+            </div>
+        </div>
+
+        <div id="eventoMasFavContainer"></div>
+    `;
+
+    await mostrarEventoMasFavoritoDashboard();
+}
+
 
 // ===============================
 // USUARIOS (cliente_perfil)
@@ -484,16 +567,22 @@ async function editarEvento(id) {
 async function guardarEvento() {
     const id = document.getElementById("eventoId").value;
 
+    const storedUser = localStorage.getItem("user");
+    let userId = null;
+    if (storedUser) {
+        const user = JSON.parse(storedUser);
+        userId = user.id || user.user_id; // Dependiendo de cómo guardes el id
+    }
+
     const nuevoEvento = {
         nombre_evento: document.getElementById("eventoNombre").value,
-        // Aseguramos que sea número antes de guardar
         tipo_evento_id: parseInt(document.getElementById("eventoTipo").value) || null,
         descripcion: document.getElementById("eventoDescripcion").value,
         horario_evento: document.getElementById("eventoHorario").value,
-        // Aseguramos que sea número antes de guardar
         estacion_id: parseInt(document.getElementById("eventoEstacion").value) || null,
         direccion: document.getElementById("eventoDireccion").value,
         imagen_url: document.getElementById("eventoImagenUrl").value,
+        creado_por: userId,
     };
 
     let res;
@@ -700,15 +789,24 @@ async function editarLugar(id) {
 async function guardarLugar() {
     const id = document.getElementById("lugarId").value;
 
+     // Obtener el user_id del admin logueado
+    const storedUser = localStorage.getItem("user");
+    let userId = null;
+    if (storedUser) {
+        const user = JSON.parse(storedUser);
+        userId = user.id || user.user_id;
+    }
+
     const nuevoLugar = {
         nombre_lugar: document.getElementById("lugarNombre").value,
         direccion_cultural: document.getElementById("lugarDireccion").value,
         horario_apertura: document.getElementById("lugarApertura").value,
         horario_cierre: document.getElementById("lugarCierre").value,
-        // Aseguramos que sea número antes de guardar
         estacion_id: parseInt(document.getElementById("lugarEstacion").value) || null,
         imagen_url: document.getElementById("lugarImagen").value,
         descripcion_cultural: document.getElementById("lugarDescripcion").value,
+        creado_por: userId,
+
     };
 
     let res;
@@ -1110,99 +1208,160 @@ window.editarLinea = editarLinea;
 window.eliminarLinea = eliminarLinea;
 window.guardarLinea = guardarLinea;
 
-// ===============================
-// ESTADÍSTICAS / EVENTO FAVORITO
-// ===============================
 
-async function mostrarEventoMasFavorito() {
-    // Asumimos que el contenedor para esto es 'eventoFavoritoContainer' o similar.
-    
-    const container = document.getElementById("eventoFavoritoContainer") || document.getElementById("reportesContainer");
+
+
+// ===============================
+// DASHBOARD / EVENTO MÁS FAVORITO
+// ===============================
+async function mostrarEventoMasFavoritoDashboard() {
+    const container = document.getElementById("dashboardContainer");
     if (!container) {
-        console.error("No se encontró el contenedor para el evento favorito.");
+        console.error("No se encontró #dashboardContainer");
         return;
     }
-    
-    container.innerHTML = "<p>Cargando evento...</p>";
+
+    // Contenedor GENERAL del módulo (3 cards)
+    const bloque = document.createElement("div");
+    bloque.className = "favoritos-grid"; 
+    container.appendChild(bloque);
 
     try {
-        // 1 Traemos todos los favoritos
+        // 1️⃣ Obtener favoritos
         const { data: favoritos, error: favError } = await supabase
             .from('favorito')
-            .select('evento_id')
-            .limit(1000); // aseguramos traer todos los registros si hay muchos
+            .select('evento_id');
 
         if (favError) throw favError;
-
-        console.log("Favoritos traídos de Supabase:", favoritos);
-
         if (!favoritos || favoritos.length === 0) {
-            container.innerHTML = "<p>No hay favoritos registrados.</p>";
+            bloque.innerHTML = "<p>No hay favoritos registrados.</p>";
             return;
         }
 
-        // 2 Filtramos solo los que tienen evento_id válido
-        const favoritosValidos = favoritos.filter(fav => fav.evento_id != null);
-
-        if (favoritosValidos.length === 0) {
-            container.innerHTML = "<p>No hay eventos favoritos válidos.</p>";
-            return;
-        }
-
-        console.log("Favoritos válidos:", favoritosValidos);
-
-        // 3️ Contamos cuántas veces aparece cada evento_id
+        // 2️⃣ Conteo por evento
         const conteo = {};
-        favoritosValidos.forEach(fav => {
-            const id = fav.evento_id;
-            conteo[id] = (conteo[id] || 0) + 1;
+        favoritos.forEach(f => {
+            if (!f.evento_id) return;
+            conteo[f.evento_id] = (conteo[f.evento_id] || 0) + 1;
         });
 
-        console.log("Conteo por evento:", conteo);
-
-        // 4️ Convertimos el conteo en array y ordenamos por cantidad descendente
-        const sortedEventos = Object.entries(conteo)
+        const sorted = Object.entries(conteo)
             .map(([id, count]) => ({ id: Number(id), count }))
             .sort((a, b) => b.count - a.count);
 
-        if (sortedEventos.length === 0) {
-            container.innerHTML = "<p>No hay eventos con favoritos válidos.</p>";
-            return;
-        }
+        const idsEventos = sorted.map(e => e.id);
 
-        // 5️⃣ Tomamos el primero (evento con más favoritos)
-        const eventoIdMasFavorito = sortedEventos[0].id;
-        const maxFavs = sortedEventos[0].count;
+        // 3️⃣ Eventos
+        const { data: eventosDatos, error: evError } = await supabase
+            .from("evento")
+            .select("id, nombre_evento, descripcion, horario_evento, imagen_url, tipo_evento_id")
+            .in("id", idsEventos);
 
-        console.log("ID del evento más favorito:", eventoIdMasFavorito, "Veces guardado:", maxFavs);
+        if (evError) throw evError;
 
-        // 6️⃣ Traemos datos del evento más favorito
-        const { data: eventoData, error: eventoError } = await supabase
-            .from('evento')
-            .select('*')
-            .eq('id', eventoIdMasFavorito)
-            .single();
+        // 4️⃣ Categorías
+        const idsCategorias = [...new Set(eventosDatos.map(e => e.tipo_evento_id))];
+        const { data: categorias, error: catError } = await supabase
+            .from("tipo_evento")
+            .select("id, nombre_tipo")
+            .in("id", idsCategorias);
 
-        if (eventoError) throw eventoError;
+        if (catError) throw catError;
 
-        // Mostramos el panel
-        container.innerHTML = `
-            <h3> ${eventoData.nombre_evento}</h3>
-            ${eventoData.imagen_url ? `<img src="${eventoData.imagen_url}" alt="${eventoData.nombre_evento}" style="max-width: 100%; height: auto; margin-bottom: 10px; border-radius: 8px;">` : ""}
-            <p>${eventoData.descripcion || "Sin descripción disponible"}</p>
-            <p><strong>Fecha:</strong> ${eventoData.horario_evento || "No disponible"}</p>
-            <p><strong>Veces guardado como favorito:</strong> ${maxFavs}</p>
+        // 5️⃣ Conteo categorías
+        const conteoCategorias = {};
+        eventosDatos.forEach(ev => {
+            const categoria = categorias.find(c => c.id === ev.tipo_evento_id);
+            if (!categoria) return;
+            const veces = conteo[ev.id];
+            conteoCategorias[categoria.nombre_tipo] =
+                (conteoCategorias[categoria.nombre_tipo] || 0) + veces;
+        });
+
+        // 6️⃣ Evento más guardado
+        const topEventoId = sorted[0].id;
+        const cantidadTop = sorted[0].count;
+        const eventoTop = eventosDatos.find(e => e.id === topEventoId);
+
+        // =======================================================
+        // BLOQUE DE TARJETAS CON GRID
+        // =======================================================
+        bloque.innerHTML = `
+            <div class="dashboard-grid">
+                <!-- CARD 1: EVENTO MÁS GUARDADO -->
+                <div class="card favorito-card">
+                    <h3>Evento más guardado</h3>
+                    ${eventoTop.imagen_url ? `<img src="${eventoTop.imagen_url}" class="favorito-img">` : ""}
+                    <h4>${eventoTop.nombre_evento}</h4>
+                    <p>${eventoTop.descripcion || "Sin descripción"}</p>
+                    <p><strong>Horario:</strong> ${eventoTop.horario_evento || "No disponible"}</p>
+                    <p><strong>Guardado:</strong> ${cantidadTop} veces</p>
+                </div>
+
+                <!-- CARD 2: TOP EVENTOS -->
+                <div class="card favorito-card">
+                    <h3>Top eventos más guardados</h3>
+                    <canvas id="graficoTopEventos"></canvas>
+                </div>
+
+                <!-- CARD 3: CATEGORÍAS -->
+                <div class="card favorito-card">
+                    <h3>Categorías más guardadas</h3>
+                    <canvas id="graficoCategorias"></canvas>
+                </div>
+            </div>
         `;
+
+         const canvasTop = document.getElementById("graficoTopEventos"); // <-- AQUI
+        const canvasCat = document.getElementById("graficoCategorias");  // <-- AQUI
+        canvasTop.height = 250;  // <-- AQUI puedes cambiar el valor
+        canvasCat.height = 250;  // <-- AQUI puedes cambiar el valor
+
+        // =======================================================
+        // GRÁFICO TOP 5 EVENTOS
+        // =======================================================
+        const top5 = sorted.slice(0, 5);
+        new Chart(
+            
+            document.getElementById("graficoTopEventos"),
+            {
+                type: "bar",
+                data: {
+                    labels: top5.map(x => eventosDatos.find(e => e.id === x.id)?.nombre_evento),
+                    datasets: [{
+                        label: "Guardados",
+                        data: top5.map(x => x.count),
+                        backgroundColor: '#ff042ec9',
+                        borderWidth: 1
+                    }]
+                },
+                options: { responsive: true, plugins: { legend: { display: false } } }
+            }
+        );
+
+        // =======================================================
+        // GRÁFICO CATEGORÍAS
+        // =======================================================
+        new Chart(
+            document.getElementById("graficoCategorias"),
+            {
+                type: "bar",
+                data: {
+                    labels: Object.keys(conteoCategorias),
+                    datasets: [{
+                        label: "Guardados por categoría",
+                        data: Object.values(conteoCategorias),
+                        backgroundColor: '#0b56f8ff',
+                        borderWidth: 1
+                    }]
+                },
+                options: { responsive: true, plugins: { legend: { display: false } } }
+            }
+        );
 
     } catch (err) {
         console.error(err);
-        container.innerHTML = "<p>Error al cargar el evento favorito.</p>";
+        bloque.innerHTML = "<p>Error al cargar datos.</p>";
     }
 }
-
-// Ejecutar al cargar la página
-document.addEventListener("DOMContentLoaded", mostrarEventoMasFavorito);
-window.mostrarEventoMasFavorito = mostrarEventoMasFavorito;
-
-
 
