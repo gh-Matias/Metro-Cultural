@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mis Favoritos - Metro Cultural</title>
+  <link rel="stylesheet" href="favoritos.css" />
+  <link rel="stylesheet" href="hamburguesa.css">
+</head>
+<body>
+
+  <header id="menu-container"></header>
+  <main class="container">
+
+    <!-- Favoritos de lugares culturales -->
+    <section class="favoritos">
+      <h2 class="section-title">Mis lugares Favoritos</h2>
+      
+       <!-- Filtro lineas -->
+        <div id="filtro-lineas" class="filtros"></div>
+        <br>
+        <div id="lista-favoritos"></div>
+
+      <div id="lista-favoritos-grid" class="favoritos-grid">
+      </div>
+    </section>
+     <!-- ------------------------  -->
+    <!-- Favoritos de eventos -->
+    <section class="favoritos">
+      <h2 class="section-title">Mis eventos Favoritos</h2>
+
+       <!-- Filtro tipos -->
+    <div id="filtros-tipo" class="filtros-container">
+      <button class="filtro-btn activo" data-tipo="todos">Todos</button>
+    </div>
+
+    <button id="ordenar-fecha" class="filtro-btn">
+    Ordenar por fecha ↑
+    </button>
+
+      <div id="lista-eventos-favoritos" class="favoritos-grid">
+        <p>Cargando tus eventos favoritos...</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+  const client = supabase.createClient(
+    "https://jgiwhiccqbzeffyndsbf.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpnaXdoaWNjcWJ6ZWZmeW5kc2JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAyNzM1MDIsImV4cCI6MjA3NTg0OTUwMn0.Q7qh7dODhSTFTKvOmwrkA9mYkbxAhDK28AyaVdJjCk4"
+  );
+  </script>
+
+  <script>
+  fetch("hamburguesa.html")
+    .then(res => res.text())
+    .then(data => {
+      document.getElementById("menu-container").innerHTML = data;
+
+      // Esperar un instante para que DOM esté listo
+      setTimeout(() => {
+        activarHamburguesa();
+        controlarBotonesSesion();
+        asignarLogout();
+      }, 50);
+    });
+
+  function activarHamburguesa() {
+    const hamburger = document.getElementById("hamburger");
+    const navLinks = document.getElementById("navLinks");
+    if (!hamburger || !navLinks) return;
+    hamburger.addEventListener("click", () => navLinks.classList.toggle("show"));
+  }
+
+  async function controlarBotonesSesion() {
+    const { data: { session } } = await client.auth.getSession();
+
+    const loginBtn = document.querySelector('.nav-links a[href="Login.html"]');
+    const perfilBtn = document.querySelector('.nav-links a[href="perfil.html"]');
+    const logoutBtn = document.getElementById("btn-logout");
+
+    if (!loginBtn || !logoutBtn  || !perfilBtn) return;
+
+    if (session) {
+      loginBtn.style.display = "none";
+      logoutBtn.style.display = "block";
+      perfilBtn.style.display = "block";
+    } else {
+      loginBtn.style.display = "block";
+      logoutBtn.style.display = "none";
+      perfilBtn.style.display = "none";
+    }
+
+    const filtrosLineas = document.getElementById("filtro-lineas");
+  const filtrosTipo = document.getElementById("filtros-tipo");
+  const ordenarFechaBtn = document.getElementById("ordenar-fecha");
+
+  if (!session) {
+    if (filtrosLineas) filtrosLineas.style.display = "none";
+    if (filtrosTipo) filtrosTipo.style.display = "none";
+    if (ordenarFechaBtn) ordenarFechaBtn.style.display = "none";
+  } else {
+    if (filtrosLineas) filtrosLineas.style.display = "flex";
+    if (filtrosTipo) filtrosTipo.style.display = "flex";
+    if (ordenarFechaBtn) ordenarFechaBtn.style.display = "inline-block";
+  }
+
+  }
+
+  function asignarLogout() {
+    const logoutBtn = document.getElementById("btn-logout");
+    if (!logoutBtn) return;
+
+    logoutBtn.addEventListener("click", async () => {
+      await client.auth.signOut();
+
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
+      localStorage.removeItem("user");
+
+      window.location.href = "Login.html";
+    });
+  }
+  </script>
+
+  <!-- Scripts para cargar favoritos -->
+  <script src="./favoritos-lista.js"></script>
+  <script src="./favoritos-evento.js"></script>
+</body>
+</html>

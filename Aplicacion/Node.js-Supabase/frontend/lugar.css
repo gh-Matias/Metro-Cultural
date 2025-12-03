@@ -1,0 +1,207 @@
+/* ESTILOS GENERALES */
+body {
+  font-family: "Poppins", sans-serif;
+  background: url("img/fondo.jpg") no-repeat center center fixed;
+  background-size: cover;
+  background-position: center;
+  color: #050505;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  
+}
+
+/* CONTENEDOR PRINCIPAL */
+.container {
+  background-color: rgba(0, 0, 0, 0.452);
+  padding: 30px 20px 40px;
+  animation: fadeIn 1.2s ease-in-out;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  width: 100%;
+  position: relative;
+  margin-top: 60px;
+  max-width: 1000px; /* más ancho */
+  border-radius: 20px; /* se ve más card */
+}
+
+.texto-izq {
+  text-align: left;
+  text-align: justify;
+  max-width: 90%;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+.texto-inline {
+  display: block;
+  text-align: center;
+  
+}
+
+
+/* TÍTULO */
+#nombre-lugar {
+  font-size: 2.2rem;
+  color: rgb(230, 218, 218);
+  margin-bottom: 25px;
+  font-weight: 700;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+ 
+}
+
+/* IMAGEN DEL LUGAR */
+.evento-img {
+  width: 100%;
+  max-width: 600px;
+  max-height: 400px;
+  object-fit: cover;
+  border-radius: 16px;
+  margin: 20px auto;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.evento-img:hover {
+  transform: scale(1.04);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+}
+
+/* TEXTOS */
+p {
+  font-size: 1.1rem;
+  margin: 12px 0;
+  color: #ffffff;
+}
+
+p strong {
+  color: #ffffff;
+}
+
+/* BOTONES */
+.volver {
+  display: inline-block;
+  margin-top: 30px;
+  text-decoration: none;
+  color: #ff0000;
+  background-color: white;
+  padding: 12px 38px;
+  border-radius: 30px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  
+}
+
+.volver:hover {
+  background-color: #ff0000;
+  color: #ffffff;
+  transform: translateY(-3px);
+}
+
+.continuar {
+  display: inline-block;
+  margin-top: 30px;
+  text-decoration: none;
+  color: #ff0000;
+  background-color: white;
+  padding: 12px 25px;
+  border-radius: 30px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  
+}
+.continuar:hover {
+  background-color: #ff0000;
+  color: #ffffff;
+  transform: translateY(-3px);
+}
+
+/* ANIMACIÓN */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .container {
+    margin: 80px 20px;
+    padding: 25px;
+  }
+
+  #nombre-lugar {
+    font-size: 1.8rem;
+  }
+
+  p {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .evento-img {
+    max-height: 280px;
+  }
+
+  #nombre-lugar {
+    font-size: 1.5rem;
+  }
+
+  .volver {
+    padding: 10px 20px;
+    font-size: 0.95rem;
+  }
+}
+
+.favorito-btn {
+  display: inline-block;
+  margin-top: 15px;
+  padding: 12px 20px;
+  background-color: #caad5e;
+  color: #e2dddd;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+/* efecto hover (pasar por encima) */
+.favorito-btn:hover {
+  transform: scale(1.25);
+  filter: drop-shadow(0 0 8px #ffd700);
+}
+
+/* animación al marcar */
+.favorito-btn.animar {
+  animation: pop 0.3s ease;
+}
+
+
+
+@keyframes pop {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.6); }
+  100% { transform: scale(1); }
+}
+
+
+.btn-como-llegar {
+  display: inline-block;
+  margin-top: 15px;
+  padding: 12px 20px;
+  background-color: #ce808b;  
+  color: #e2dddd;            
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 400;
+  transition: 0.2s;
+  cursor: pointer;
+}
+
+
+.btn-como-llegar:hover {
+  transform: scale(1.25);
+  filter: drop-shadow(0 0 8px #ff0000);
+}

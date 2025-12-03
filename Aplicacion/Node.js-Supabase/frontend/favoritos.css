@@ -1,0 +1,236 @@
+body {
+  font-family: "Poppins", Arial, sans-serif;
+  color: #000000;
+  background: url("img/font2.jpg") no-repeat center center fixed;
+  background-size: cover;
+}
+
+/* Título principal */
+.titulo-favoritos {
+  text-align: center;
+  color: #b10000;
+  margin: 30px 0 10px;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+/* === SECCIÓN  favoritoss=== */
+.favoritos {
+  padding: 70px 20px;
+  max-width: 1200px;
+  margin: auto;
+  animation: fadeIn 1.2s ease-in-out;
+  text-align: center;
+
+}
+
+.section-title {
+  display: inline-block;        /* hace que el fondo abarque solo el texto */
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 40px;
+  border-radius: 25px;
+  background-color: rgba(15, 15, 15, 0.349);
+  color: #ffffff;
+  padding: 0.3rem 1.5rem;        /* ajusta el espacio alrededor del texto */
+  position: relative;
+  
+}
+
+.section-title::after {
+  content: "";
+  width: 80px;
+  height: 3px;
+  
+  background-color: rgb(223, 214, 214);
+  
+  display: block;
+  margin: 10px auto 0;
+  border-radius: 5px;
+}
+
+
+.favoritos-grid {
+  
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;  
+  gap: 25px;                 
+  padding: 20px;
+}
+/* Card individual */
+.favorito-card {
+  display: flex;             /* agregamos flex */
+  flex-direction: column;    /* apilamos contenido verticalmente */
+  justify-content: space-between; /* empuja contenido arriba y botón abajo */
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  width: 100%;
+  max-width: 350px;
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.favorito-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Imagen */
+.favorito-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-bottom: 2px solid #eee;
+}
+
+/* Texto */
+.favorito-card h3 {
+  margin: 12px 0 5px;
+  color: #222222;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.favorito-card p {
+  margin: 0 0 10px;
+  color: #000000;
+  font-size: 14px;
+}
+
+p {
+  font-size: 1.1rem;
+  margin: 12px 0;
+  color: #000000;
+  margin-bottom: 40px;
+  border-radius: 25px;
+  background-color: rgba(255, 255, 255, 0.678);
+  padding: 0.3rem 1.5rem
+}
+
+
+
+.filtros-container {
+  
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+  justify-content: center; /* Centra los elementos */
+}
+
+.filtro-btn {
+  
+  padding: 8px 14px;
+  border: none;
+  background: #ddd;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.filtro-btn.activo {
+  background: #333;
+  color: white;
+}
+
+
+.filtro-btn {
+  padding: 6px 12px;
+  margin: 4px;
+  border: 2px solid #333;
+  border-radius: 6px;
+  cursor: pointer;
+  background: transparent;
+  color: #ffffff;
+  background-color: #252424da;
+}
+.filtro-btn:hover {
+  background: #b4aeae;
+}
+
+
+#lista-favoritos,
+#lista-favoritos-grid {
+  
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; /* Centra todos los cards horizontalmente */
+  gap: 25px; /* Espacio entre cards */
+}
+#filtro-lineas {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+
+.btn-eliminar {
+    display: flex;
+    align-items: center;
+    margin: 0 auto 15px auto;
+    gap: 6px;
+    background-color: #ffffff;   /* rojo fuerte */
+    color: rgb(240, 1, 1);
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+}
+.btn-eliminar img {
+    width: 20px;
+    height: 20px;
+}
+.btn-eliminar:hover {
+    background-color: #5c5c5c52;
+}
+
+
+img.icono-small {
+  width: 16px !important;
+  height: 16px !important;
+  object-fit: contain;
+  vertical-align: middle;
+  margin-right: 4px;
+  
+}
+
+
+.filtro-btn {
+  padding: 6px 14px;
+  border-radius: 6px;
+  margin-right: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s;
+}
+
+.filtro-btn:hover {
+  opacity: 0.9;
+}
+
+
+.btn-como-llegar {
+  display: inline-block;
+  padding: 10px 14px;
+  border-radius: 20px;
+  color: rgb(0, 0, 0);
+  text-decoration: none;
+  font-size: 14px;
+  margin: 0 auto 15px auto;
+  transition: 0.2s ease;
+}
+
+.btn-como-llegar:hover {
+  background-color: #ffffff;
+  transform: scale(1.25);
+  filter: drop-shadow(0 0 8px #00ff55);
+}
+

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Metro Cultural - Plataforma de eventos culturales</title>
+  <link rel="stylesheet" href="lugar.css">
+  <link rel="stylesheet" href="hamburguesa.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+
+
+</head>
+<body>
+  <header id="menu-container"></header>
+  <div class="container">
+    <h1 id="nombre-lugar">Cargando...</h1>
+    <img id="imagen-lugar" src="" alt="Imagen del lugar" class="evento-img" style="display:none;">
+    <p><strong>Dirección</strong> <span id="direccion" class="texto-inline"></span></p>
+    <p><strong>Horario</strong> <span id="horario" class="texto-inline"></span></p>
+    <p><strong>Descripción</strong></p><p id="descripcion" class="texto-izq"></p>
+    <p><strong>Ubicación</strong></p><p id="descripcion" class="texto-izq"></p>
+   
+    <div id="map" style="width: 100%; height: 350px; border-radius: 10px; margin-top: 10px;"></div>
+    <br>
+    <!-- Botón favorito -->
+     <button id="btn-favorito" class="favorito-btn">⭐Agregar Favorito</button>
+     
+    <div class="botones-nav">
+      <a href="estaciones.html" class="volver">⬅ Volver </a>
+      
+      <a href="eventos.html" class="continuar">Continuar ➡</a>
+    </div>
+    
+  </div>
+
+  <!-- SUPABASE -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    const supabase = window.supabase.createClient(
+      "https://jgiwhiccqbzeffyndsbf.supabase.co",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpnaXdoaWNjcWJ6ZWZmeW5kc2JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAyNzM1MDIsImV4cCI6MjA3NTg0OTUwMn0.Q7qh7dODhSTFTKvOmwrkA9mYkbxAhDK28AyaVdJjCk4"
+    );
+
+    async function cargarLugar() {
+  const estacionId = localStorage.getItem("estacionSeleccionada");
+
+  if (!estacionId) {
+    document.getElementById("nombre-lugar").textContent = "No se seleccionó ninguna estación.";
+    return;
+  }
+
+  const { data, error } = await supabase
+    .from("lugar_cultural")
+    .select("*")
+    .eq("estacion_id", estacionId)
+    .single();
+
+  if (error || !data) {
+    console.error("Error al cargar lugar:", error);
+    document.getElementById("nombre-lugar").textContent = "No se encontró información para esta estación.";
+    return;
+  }
+
+  // Mostrar datos
+  document.getElementById("nombre-lugar").textContent = data.nombre_lugar;
+  document.getElementById("direccion").textContent = data.direccion_cultural;
+  document.getElementById("horario").textContent = `${data.horario_apertura} - ${data.horario_cierre}`;
+  document.getElementById("descripcion").textContent = data.descripcion_cultural;
+
+  // Imagen
+  const img = document.getElementById("imagen-lugar");
+  if (data.imagen_url) {
+    img.src = data.imagen_url;
+    img.style.display = "block";
+  }
+
+  // --- MAPA ---
+
+  async function geocodificarDireccion(direccion) {
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(direccion)}`;
+
+    const response = await fetch(url, {
+      headers: {
+        "User-Agent": "MetroCultural-App",
+        "Accept-Language": "es"
+      }
+    });
+
+    const resultado = await response.json();
+    if (resultado.length === 0) return null;
+
+    return {
+      lat: parseFloat(resultado[0].lat),
+      lon: parseFloat(resultado[0].lon)
+    };
+  }
+
+  const coords = await geocodificarDireccion(data.direccion_cultural);
+
+  if (coords) {
+    const map = L.map("map").setView([coords.lat, coords.lon], 16);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution: "© OpenStreetMap"
+    }).addTo(map);
+
+    L.marker([coords.lat, coords.lon])
+      .addTo(map)
+      .bindPopup(data.nombre_lugar)
+      .openPopup();
+
+    // ============================
+    // ⭐ BOTÓN "Cómo llegar"
+    // ============================
+    const btnComoLlegar = document.createElement("a");
+    btnComoLlegar.textContent = "📍Como llegar ";
+    btnComoLlegar.className = "btn-como-llegar";
+    btnComoLlegar.href = `https://www.google.com/maps/dir/?api=1&destination=${coords.lat},${coords.lon}`;
+    btnComoLlegar.target = "_blank";
+
+    
+    document.querySelector(".botones-nav").before(btnComoLlegar);
+
+
+  } else {
+    document.getElementById("map").innerHTML = "No se pudo cargar el mapa para esta dirección.";
+  }
+
+  // Guardar ID del lugar
+  document.getElementById("btn-favorito").dataset.lugarId = data.id;
+}
+
+cargarLugar();
+    
+  </script>
+
+  <script>
+fetch("hamburguesa.html")
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById("menu-container").innerHTML = data;
+
+    // Esperar un instante para que DOM esté listo
+    setTimeout(() => {
+      activarHamburguesa();
+      controlarBotonesSesion();
+      asignarLogout();
+    }, 50);
+  });
+
+function activarHamburguesa() {
+  const hamburger = document.getElementById("hamburger");
+  const navLinks = document.getElementById("navLinks");
+  if (!hamburger || !navLinks) return;
+  hamburger.addEventListener("click", () => navLinks.classList.toggle("show"));
+}
+
+async function controlarBotonesSesion() {
+  const { data: { session } } = await supabase.auth.getSession();
+
+  const loginBtn = document.querySelector('.nav-links a[href="Login.html"]');
+  const perfilBtn = document.querySelector('.nav-links a[href="perfil.html"]');
+  const logoutBtn = document.getElementById("btn-logout");
+
+  if (!loginBtn || !logoutBtn || !perfilBtn) return;
+
+  if (session) {
+    loginBtn.style.display = "none";
+    logoutBtn.style.display = "block";
+    perfilBtn.style.display = "block";
+  } else {
+    loginBtn.style.display = "block";
+    logoutBtn.style.display = "none";
+    perfilBtn.style.display = "none";
+  }
+}
+
+function asignarLogout() {
+  const logoutBtn = document.getElementById("btn-logout");
+  if (!logoutBtn) return;
+
+  logoutBtn.addEventListener("click", async () => {
+    await client.auth.signOut();
+
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    localStorage.removeItem("user");
+
+    window.location.href = "Login.html";
+  });
+}
+
+</script>
+
+  <script src="favoritos.js"></script>
+</body>
+</html>
+
